@@ -35,7 +35,7 @@ gcloud compute ssh ${VM_NAME}
 And you're good to go! Once you are done with your analysis, remember to delete your virtual machine either by navigating to the virtual machines section on your Google Cloud Dashboard, or by running:
 
 ````bash
-gcloud compute instances delete
+gcloud compute instances delete ${VM_NAME}
 ````
 
 It might be a good idea to add this to the end of your analysis script, so that the virtual machine is deleted once your analysis is finished and is not left running for no reason.
