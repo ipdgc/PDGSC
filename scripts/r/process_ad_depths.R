@@ -1,0 +1,13 @@
+FILE <- Sys.getenv("FILE")
+library(readr)
+library(stringr)
+library(dplyr)
+library(stringi)
+AD_full <- read_delim(str_c("GATK_AD_files_split/", FILE), delim="\t", col_types = cols(.default="c"))
+write.table(AD_full$ID, str_c("split_processed_depth_files/variant_ids_", FILE), sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
+AD_depths_indices <- AD_full %>% names() %>% str_detect(".AD") %>% which()
+AD_depths <- AD_full[,c(AD_depths_indices)]
+rm(AD_full)
+gc()
+AD_depths_sum <- AD_depths %>% mutate_all(funs(str_replace_all(., ",", "+")))
+write.table(AD_depths_sum, str_c("split_processed_depth_files/AD_depths_sum_", FILE), sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)

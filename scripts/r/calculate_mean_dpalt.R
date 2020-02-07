@@ -1,0 +1,12 @@
+library(tidyverse)
+library(stringr)
+library(stringi)
+DPALT_SUBSET <- Sys.getenv("DPALT_SUBSET")
+DPALT_NEWFILENAME <- DPALT_SUBSET %>% str_replace("matrix_chrALL", "full_means")
+dpalt <- read_delim(str_c("final_AD_DPALT_files_sample_subsets/", DPALT_SUBSET), delim="\t", col_types = cols(.default="n"))
+mean_dpalts <- data.frame(sapply(dpalt, mean, na.rm=TRUE)[-1])
+names(mean_dpalts) <- "mean_dpalt"
+mean_dpalts$iid <- rownames(mean_dpalts)
+write.table(mean_dpalts, str_c("DPALT_per_sample_means/", DPALT_NEWFILENAME), sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
+rm(dpalt)
+gc()
