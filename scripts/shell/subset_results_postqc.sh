@@ -1,3 +1,6 @@
+# Install required tools
+sudo bash install_tools.sh
+
 export SUBSTUDY=group2_matched_2to1_depth_anc
 
 # group2_matched_all_depth_anc_chr1.singleVar_noMAC_03Sep_CaseControl_substudy_n_sites_substudies_UCLonly.MetaScore.assoc.gz
@@ -25,11 +28,6 @@ done
 done < list_of_casecontrol_subsets.txt
 
 export QC_MASTERLIST=qc_masterlist_${SUBSTUDY}.txt
-
-
-wget http://launchpadlibrarian.net/74318164/tabix_0.2.5-1ubuntu1_amd64.deb
-sudo dpkg -i tabix_0.2.5-1ubuntu1_amd64.deb
-sudo apt-get -f install
 
 while read CASECONTROLSUBSET
 do

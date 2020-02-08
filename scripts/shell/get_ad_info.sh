@@ -1,35 +1,5 @@
 ##### GET AD INFO
 
-### Install required software:
-sudo apt-get update
-sudo apt-get install gcc make autoconf libssl-dev libcurl4-openssl-dev g++ pkg-config zlib1g-dev libbz2-dev liblzma-dev libxml2-dev libncurses5-dev libncursesw5-dev unzip r-base-core -y
-
-wget "http://www.zlib.net/zlib-1.2.11.tar.gz"
-tar -zxvf zlib-1.2.11.tar.gz
-cd zlib-1.2.11 && sudo ./configure && sudo make && sudo make install && cd ..
-git clone "https://github.com/vcftools/vcftools.git"
-cd vcftools && sudo ./autogen.sh && sudo ./configure && sudo make && sudo make install && cd ..
-git clone --branch=develop git://github.com/samtools/bcftools.git
-git clone --branch=develop git://github.com/samtools/htslib.git
-git clone --branch=develop git://github.com/samtools/samtools.git
-cd htslib && sudo make && sudo make install && cd ..
-cd bcftools && sudo make && sudo make install && cd ..
-cd samtools && sudo make && sudo make install && cd ..
-
-wget https://www.cog-genomics.org/static/bin/plink/plink_linux_x86_64.zip
-unzip plink_linux_x86_64.zip plink
-
-wget http://psychgen.u.hpc.mssm.edu/plinkseq_downloads/plinkseq-x86_64-latest.zip
-unzip plinkseq-x86_64-latest.zip
-
-### Install required R packages
-Rscript install_required_packages.R
-wget "https://github.com/gabraham/flashpca/blob/master/exclusion_regions_hg19.txt"
-
-### Download GATK & PICARD
-wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK"
-wget "https://github.com/broadinstitute/picard/releases/download/2.16.0/picard.jar"
-tar xvjf auth?package=GATK
 java -jar picard.jar CreateSequenceDictionary REFERENCE=human_g1k_v37.fasta OUTPUT=human_g1k_v37.dict
 
 ### Set the prefix for the VCF. Need to change this and replace all file names as variables, as currently all scripts reference the actual file name and need to be adapted.

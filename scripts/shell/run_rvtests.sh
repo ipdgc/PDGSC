@@ -1,7 +1,3 @@
-wget https://github.com/zhanxw/rvtests/releases/download/v2.0.5/rvtests-20170613-444e2f-linux64-static.tar.gz
-mkdir rvtests_june
-tar zxvf rvtests-20170613-444e2f-linux64-static.tar.gz -C rvtests_june
-
 export SUBSTUDY=group2_matched_2to1_depth_anc
 export resultsdir="results_${SUBSTUDY}"
 
