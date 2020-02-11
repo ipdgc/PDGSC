@@ -1,4 +1,4 @@
-##### Installs most commonly used tools in the analysis pipeline
+##### Downloads & installs most commonly used tools and resources in the analysis pipeline
 
 # Install some common utilities
 sudo apt-get update
