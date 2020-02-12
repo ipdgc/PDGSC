@@ -2,7 +2,7 @@
 
 # Install some common utilities
 sudo apt-get update
-sudo apt-get install gcc make zlib1g-dev libbz2-dev liblzma-dev libssl-dev libcurl4-openssl-dev autoconf g++ pkg-config unzip libxml2-dev libncurses5-dev libncursesw5-dev -y
+sudo apt-get install gcc make zlib1g-dev libbz2-dev liblzma-dev libssl-dev libcurl4-openssl-dev autoconf g++ pkg-config unzip libxml2-dev libncurses5-dev libncursesw5-dev default-jre -y
 
 # Install R separately to ensure version > 3.3
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
@@ -54,6 +54,11 @@ cd htslib && sudo make && sudo make install && cd ..
 cd bcftools && sudo make && sudo make install && cd ..
 cd samtools && sudo make && sudo make install && cd ..
 
+# Install ANNO
+git clone "https://github.com/zhanxw/anno.git"
+cd anno && sudo make && cd resources && ./download.sh && cd ../..
+
+
 # Install Plink
 wget https://www.cog-genomics.org/static/bin/plink/plink_linux_x86_64.zip
 unzip plink_linux_x86_64.zip plink
@@ -66,6 +71,11 @@ unzip plinkseq-x86_64-latest.zip
 wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK"
 wget "https://github.com/broadinstitute/picard/releases/download/2.16.0/picard.jar"
 tar xvjf auth?package=GATK
+./gatk-4.0.5.1/gatk CreateSequenceDictionary -R human_g1k_v37.fasta -O human_g1k_v37.dict
+
+### Download and install snpEff
+wget "https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
+unzip snpEff_latest_core.zip
 
 # Install older version of Tabix (0.2.5 or older) to be able to index the summary/covariance files
 sudo apt-get remove tabix
