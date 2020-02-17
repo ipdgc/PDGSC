@@ -1,10 +1,10 @@
 # PDGSC Analysis Pipeline
 
-# Table of contents
-1. [Introduction](#introduction)
-2. [Summary of the PDGSC pipeline](#pipeline)
-3. [Useful scripts for exome analyses](#scripts)
-4. [Some general notes for beginners running analyses on the cloud](#cloud)
+## Table of contents
+[Introduction](#introduction)
+[Summary of the PDGSC pipeline](#pipeline)
+[Useful scripts for exome analyses](#scripts)
+[Some general notes for beginners running analyses on the cloud](#cloud)
 
 
 ## Introduction <a name="introduction"></a>
