@@ -13,6 +13,16 @@ Collection of scripts used in the analysis and QC of the PDGSC data, as well as 
 
 ## Summary of the PDGSC pipeline <a name="pipeline"></a>
 
+1. Clone this github repository
+
+2. Install required/useful tools
+
+````bash
+bash ./pdgsc/scripts/shell/install_tools.sh
+````
+
+
+
 Flowchart etc here
 
 ## Useful scripts for exome analyses <a name="scripts"></a>
@@ -79,4 +89,11 @@ OUTPUT_TO_BE_SAVED="name of the file you want to save in the bucket"
 BUCKET_ADDRESS="the location in the bucket where you want to save your file"
 
 gsutil -m cp ${OUTPUT_TO_BE_SAVED} ${BUCKET_ADDRESS}
+````
+
+If you're planning to run scripts from this repository, it might be easier to download this repository to the VM, by running the following. It might also be useful to install some basic useful tools that are often needed for analysis after setting up the VM (you can edit the install_tools.sh script to include/remove tools according to your needs):
+
+````bash
+git clone https://github.com/ipdgc/pdgsc.git
+bash ./pdgsc/scripts/shell/install_tools.sh
 ````
