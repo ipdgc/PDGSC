@@ -2,7 +2,7 @@
 
 # Install some common utilities
 sudo apt-get update
-sudo apt-get install gcc make zlib1g-dev libbz2-dev liblzma-dev libssl-dev libcurl4-openssl-dev autoconf g++ pkg-config unzip libxml2-dev libncurses5-dev libncursesw5-dev default-jre -y
+sudo apt-get install gcc make zlib1g-dev libbz2-dev liblzma-dev libssl-dev libcurl4-openssl-dev autoconf g++ pkg-config unzip libxml2-dev libncurses5-dev libncursesw5-dev default-jre python3 python -y
 
 # Install R separately to ensure version > 3.3
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
@@ -14,8 +14,8 @@ sudo apt-get install r-base -y
 sudo bash ./pdgsc/scripts/shell/install_r_packages.sh
 
 # Now install the new rareMETALS2/rareMETALS:
-sudo R CMD INSTALL rareMETALS2_0.1_modified0141017.tar.gz
-sudo R CMD INSTALL rareMETALS_6.8_modified041017.tar.gz
+sudo R CMD INSTALL ./pdgsc/tools/rareMETALS2_0.1_modified.tar.gz
+sudo R CMD INSTALL ./pdgsc/tools/rareMETALS_6.8_modified.tar.gz
 
 # Download the hg19 refFlat file
 wget "http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat_hg19.txt.gz"
@@ -25,7 +25,9 @@ gunzip -c refFlat_hg19.txt.gz > refFlat_hg19.txt
 # Also remove duplicated gene names from the gene list files so left with just unique names. Also create a text file with gene numbers per gene as a sanity check...
 rm genenumbers.txt
 for CHROM in {1..22} X
-    awk '$3 == "chr${CHROM}" || $3 ~ /chr${CHROM}_./ {print $1}' refFlat_hg19.txt > refFlat_hg19_genelist_chr${CHROM}.txt
+do
+    CHROMOSOME=chr${CHROM}
+    awk -v chrom="$CHROMOSOME" '$3 == chrom || $3 ~ /chrom_./ {print $1}' refFlat_hg19.txt > refFlat_hg19_genelist_chr${CHROM}.txt
     sort -u refFlat_hg19_genelist_chr${CHROM}.txt > refFlat_hg19_genelist_chr${CHROM}_unique.txt
     wc -l refFlat_hg19_genelist_chr${CHROM}_unique.txt >> genenumbers.txt
 done
@@ -58,27 +60,27 @@ cd samtools && sudo make && sudo make install && cd ..
 git clone "https://github.com/zhanxw/anno.git"
 cd anno && sudo make && cd resources && ./download.sh && cd ../..
 
-
 # Install Plink
-wget https://www.cog-genomics.org/static/bin/plink/plink_linux_x86_64.zip
-unzip plink_linux_x86_64.zip plink
+wget http://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20200121.zip
+unzip plink_linux_x86_64*.zip
 
 # Install Plinkseq
 wget http://psychgen.u.hpc.mssm.edu/plinkseq_downloads/plinkseq-x86_64-latest.zip
 unzip plinkseq-x86_64-latest.zip
 
 ### Download GATK & PICARD
-wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK"
+wget "https://github.com/broadinstitute/gatk/releases/download/4.1.4.1/gatk-4.1.4.1.zip"
 wget "https://github.com/broadinstitute/picard/releases/download/2.16.0/picard.jar"
-tar xvjf auth?package=GATK
-./gatk-4.0.5.1/gatk CreateSequenceDictionary -R human_g1k_v37.fasta -O human_g1k_v37.dict
+unzip gatk-4.1.4.1.zip
+./gatk-4.1.4.1/gatk CreateSequenceDictionary -R human_g1k_v37.fasta -O human_g1k_v37.dict
 
 ### Download and install snpEff
 wget "https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
 unzip snpEff_latest_core.zip
 
 # Install older version of Tabix (0.2.5 or older) to be able to index the summary/covariance files
-sudo apt-get remove tabix
+sudo apt-get remove tabix -y
+sudo rm -r /usr/local/bin/tabix
 wget http://launchpadlibrarian.net/74318164/tabix_0.2.5-1ubuntu1_amd64.deb
-sudo dpkg -i tabix_0.2.5-1ubuntu1_amd64.deb
-sudo apt-get -f install
+sudo apt install ./tabix_0.2.5-1ubuntu1_amd64.deb
+# tabix is now in /usr/bin/tabix
