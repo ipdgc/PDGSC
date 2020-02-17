@@ -11,7 +11,7 @@ sudo apt-get update
 sudo apt-get install r-base -y
 
 # Install useful R packages
-sudo bash install_r_packages.sh
+sudo bash ./pdgsc/scripts/shell/install_r_packages.sh
 
 # Now install the new rareMETALS2/rareMETALS:
 sudo R CMD INSTALL rareMETALS2_0.1_modified0141017.tar.gz
@@ -31,7 +31,7 @@ for CHROM in {1..22} X
 done
 
 # Download annotation resources for seqminer annotator
-Rscript seqminer_download.R
+Rscript ./pdgsc/scripts/r/seqminer_download.R
 
 # Download exclusion regions for PCA
 wget "https://github.com/gabraham/flashpca/blob/master/exclusion_regions_hg19.txt"
