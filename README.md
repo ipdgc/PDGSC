@@ -1,5 +1,17 @@
 # PDGSC Analysis Pipeline
 
+## Introduction
+
+Collection of scripts used in the analysis and QC of the PDGSC data, as well as some useful scripts for other analyses.
+
+## Summary of the PDGSC pipeline
+
+Flowchart etc her
+
+## Useful scripts for exome analyses
+
+Some useful scripts for secondary analyses
+
 ## Some general notes for beginners running analyses on the cloud:
 
 To connect to the Google Cloud using your computer, first install the Google Cloud SDK on your system by following the instructions for your operating system here:
