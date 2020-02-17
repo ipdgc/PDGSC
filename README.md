@@ -44,6 +44,14 @@ MACHINE_TYPE="type your machine type here"
 
 gcloud compute instances create ${VM_NAME} --zone us-central1-f --image-family ubuntu-1804-lts --image-project ubuntu-os-cloud  --machine-type ${MACHINE_TYPE} --maintenance-policy MIGRATE --boot-disk-size ${DISK_SIZE} --boot-disk-type pd-standard --boot-disk-device-name ${VM_NAME}
 ````
+Or if you are using the Google SDK on Windows, then:
+````dos
+SET VM_NAME="type your machine name here"
+SET DISK_SIZE="type your disk size here"
+SET MACHINE_TYPE="type your machine type here"
+
+gcloud compute instances create %VM_NAME% --zone us-central1-f --image-family ubuntu-1804-lts --image-project ubuntu-os-cloud  --machine-type %MACHINE_TYPE% --maintenance-policy MIGRATE --boot-disk-size %DISK_SIZE% --boot-disk-type pd-standard --boot-disk-device-name %VM_NAME%
+````
 
 Once you've successfully set up a virtual machine, you can connect to it with by running:
 
@@ -51,7 +59,13 @@ Once you've successfully set up a virtual machine, you can connect to it with by
 gcloud compute ssh ${VM_NAME}
 ````
 
-And you're good to go! Once you are done with your analysis, remember to delete your virtual machine either by navigating to the virtual machines section on your Google Cloud Dashboard, or by running:
+Or on windows:
+
+````dos
+gcloud compute ssh %VM_NAME%
+````
+
+And you're good to go! Once you are done with your analysis, remember to delete your virtual machine either by navigating to the virtual machines section on your Google Cloud Dashboard, or by running the following inside the virtual machine:
 
 ````bash
 gcloud compute instances delete ${VM_NAME}
