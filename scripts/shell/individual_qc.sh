@@ -89,7 +89,7 @@ export PCA_VECTORS=pdgsc_hapmap_pca.eigenvec
 Rscript ./pdgsc/scripts/r/plot_pca.R
 
 
-# Now collate all results to exclude samples that fail freemix, depth statistics (obtained using get_ad_info.sh) istats metrics, sex check, heterozygosity, are population outliers or are age under 18
+# Now collate all results to exclude samples that fail freemix, depth statistics (obtained using get_ad_info.sh) istats metrics, sex check, heterozygosity, are population outliers or are age under 18. The cutoffs for these were determined by looking at histograms.
 export ISTATS=pdgsc_allsamples_preqc.istats
 export SEXCHECK=pdgsc_sexcheck.sexcheck
 export HETEROZYGOSITY= pdgsc_hetcheck.het

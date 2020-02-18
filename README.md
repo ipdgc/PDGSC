@@ -34,9 +34,9 @@ bash ./pdgsc/scripts/shell/download_analysis_files.sh
 bash ./pdgsc/scripts/shell/get_ad_info.sh
 ````
 
-
+5. Filter out poor quality samples and perform GWAS-style individual-level QC
 ````bash
-bash ./pdgsc/scripts/shell/download_analysis_files.sh
+bash ./pdgsc/scripts/shell/insdividual_qc.sh
 ````
 
 
