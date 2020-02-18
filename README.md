@@ -13,6 +13,8 @@ Collection of scripts used in the analysis and QC of the PDGSC data, as well as 
 
 ## Summary of the PDGSC pipeline <a name="pipeline"></a>
 
+To reproduce the PDGSC analysis pipeline, do the following:
+
 1. Clone this github repository
 
 2. Install required/useful tools
@@ -21,6 +23,21 @@ Collection of scripts used in the analysis and QC of the PDGSC data, as well as 
 bash ./pdgsc/scripts/shell/install_tools.sh
 ````
 
+3. Download analysis files (VCF etc)
+
+````bash
+bash ./pdgsc/scripts/shell/download_analysis_files.sh
+````
+
+4. Generates depth metrics and calculate individual-level depth statistics
+````bash
+bash ./pdgsc/scripts/shell/get_ad_info.sh
+````
+
+
+````bash
+bash ./pdgsc/scripts/shell/download_analysis_files.sh
+````
 
 
 Flowchart etc here

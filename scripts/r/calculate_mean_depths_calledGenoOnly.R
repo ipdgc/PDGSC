@@ -23,4 +23,4 @@ names(n_sites) <- "n_sites"
 mean_ads$iid <- rownames(mean_ads)
 n_sites$iid <- rownames(n_sites)
 combined <- inner_join(mean_ads, n_sites, by = "iid")
-write.table(combined, AD_NEWFILENAME_GROUP1, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
+write.table(combined, AD_NEWFILENAME, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)

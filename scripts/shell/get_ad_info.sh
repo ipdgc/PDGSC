@@ -1,27 +1,29 @@
-##### GET AD INFO
+##### This script generates depth metrics for each sample at each variant by adding up the AD fields (addresses a bug in the VCF whereby all non-reference DP calls are set as missing)
 
-java -jar picard.jar CreateSequenceDictionary REFERENCE=human_g1k_v37.fasta OUTPUT=human_g1k_v37.dict
+export BUCKET= # bucket location
+export ORIGINAL_VCF= # name of the original VCF
+export DIR_VCF_BY_CHROM= # directory within bucket for the original VCF split by chromosome and gzipped
+export DIR_VCF_CHRPOS_VARIANT_ID= # directory within bucket for the original VCF split by chromosome and gzipped, with variant ID column replaced to be in chr:pos format (instead of rsid)
+export VCF_STEM=${ORIGINAL_VCF//.recode.vcf/}
+export SAMPLE_INFO= # name of the sample sheet
 
-### Set the prefix for the VCF. Need to change this and replace all file names as variables, as currently all scripts reference the actual file name and need to be adapted.
-export VCF_PREFIX=pdgscOnlyFeb6th2017
-
-### Use GATK VariantsToTable to extract AD fields (note, here I'm using pdgscOnlyFeb6th2017_chr${CHROM}_variantid.vcf.gz, which has variant ID's set as chr:pos. If the variant ID's haven't been set like this, probably better to extract the CHROM and POS columns with VariantsToTable for each variant instead of ID, then merge these into chr:pos
+### Use GATK VariantsToTable to extract AD fields
 echo '#!/bin/bash/
 for CHROM in {1..22} X
 do
-    tabix -p vcf ${VCF_PREFIX}_chr${CHROM}_variantid.vcf.gz
-    java -jar GenomeAnalysisTK.jar -R human_g1k_v37.fasta -T VariantsToTable -V ${VCF_PREFIX}_chr${CHROM}_variantid.vcf.gz -F ID -F ALT -GF AD -o ${VCF_PREFIX}_chr${CHROM}_variantid_AD_fields.tab
+    tabix -p vcf ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz
+    java -jar GenomeAnalysisTK.jar -R human_g1k_v37.fasta -T VariantsToTable -V ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz -F ID -F ALT -GF AD -o ${VCF_STEM}_chr${CHROM}_variantid_AD_fields.tab
 done' > GATK_get_AD.sh
 nohup bash GATK_get_AD.sh &> nohup_GATK_get_AD.log &
 wait
 
-### Now create subsetted files of each chromosome, where each file has 10,000 rows. This is to make things run more efficiently on smaller files, and might not be necessary for Merck data. Also extract header.
+### Now create subsetted files of each chromosome, where each file has 10,000 rows. This is to make things run more efficiently on smaller files. Also extract header.
 mkdir GATK_AD_files_split
 for CHROM in {1..22} X
 do
-    split -l 10000 ${VCF_PREFIX}_chr${CHROM}_variantid_AD_fields.tab GATK_AD_files_split/split_AD_fields_chr${CHROM}
+    split -l 10000 ${VCF_STEM}_chr${CHROM}_variantid_AD_fields.tab GATK_AD_files_split/split_AD_fields_chr${CHROM}
 done
-head -n 1 ${VCF_PREFIX}_chr1_variantid_AD_fields.tab > AD_FIELDS_HEADER.txt
+head -n 1 ${VCF_STEM}_chr1_variantid_AD_fields.tab > AD_FIELDS_HEADER.txt
 
 ### Now make a list of all the subsetted files (so we can loop through them). Also make a list of the first subset of each chromosome (as these already contain a header).
 mkdir ad_split_lists
@@ -56,7 +58,7 @@ do
     while read SUBSET
     do
         export FILE=${SUBSET}
-        nohup Rscript process_ad_depths.R &> nohup_process_ad_depths_${FILE}.log &
+        nohup Rscript ./pdgsc/scripts/r/process_ad_depths.R &> nohup_process_ad_depths_${FILE}.log &
     done < ad_split_lists/$LIST
 wait
 done < ad_split_lists/AD_split_list_of_lists.txt
@@ -77,7 +79,7 @@ do
     while read SUBSET
     do
         export FILE=${SUBSET}
-        nohup Rscript generate_final_AD_matrices.R &> nohup_generate_final_AD_matrices_${FILE}.log &
+        nohup Rscript ./pdgsc/scripts/r/generate_final_AD_matrices.R &> nohup_generate_final_AD_matrices_${FILE}.log &
     done < ad_split_lists/${LIST}
 wait
 done < ad_split_lists/processed_split_list_of_lists.txt
@@ -95,10 +97,10 @@ done
 mkdir allsamples_genotypes
 for CHROM in {1..22} X
 do
-    echo "rm ${VCF_PREFIX}_chr${CHROM}_variantid.vcf
-    bgzip -c -d ${VCF_PREFIX}_chr${CHROM}_variantid.vcf.gz > ${VCF_PREFIX}_chr${CHROM}_variantid.vcf
-    grep -v ^## ${VCF_PREFIX}_chr${CHROM}_variantid.vcf | cut -f1,2,10- | sed 's/:\S*//g' > allsamples_genotypes/genotypes_chr${CHROM}.tab
-    rm ${VCF_PREFIX}_chr${CHROM}_variantid.vcf" > get_genotypes_chr${CHROM}.sh
+    echo "rm ${VCF_STEM}_chr${CHROM}_variantid.vcf
+    bgzip -c -d ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz > ${VCF_STEM}_chr${CHROM}_variantid.vcf
+    grep -v ^## ${VCF_STEM}_chr${CHROM}_variantid.vcf | cut -f1,2,10- | sed 's/:\S*//g' > allsamples_genotypes/genotypes_chr${CHROM}.tab
+    rm ${VCF_STEM}_chr${CHROM}_variantid.vcf" > get_genotypes_chr${CHROM}.sh
 	nohup bash get_genotypes_chr${CHROM}.sh &> nohup_get_genotypes_chr${CHROM}.log &
 done
 wait
@@ -109,17 +111,17 @@ for CHROM in {1..22} X
 do
     export GT_FILE=genotypes_chr${CHROM}.tab
     export AD_FILE=AD_matrix_chr${CHROM}.csv
-    nohup Rscript finalise_AD_DPALT.R &> nohup_finalise_AD_DPALT_chr${CHROM}.log &
+    nohup Rscript ./pdgsc/scripts/r/finalise_AD_DPALT.R &> nohup_finalise_AD_DPALT_chr${CHROM}.log &
 done
 wait
 
-### Now generate subsetted matrices (each one containing 750 samples) to make working with these matrices to calculate individual level statistics easier. This might not be necessary with the Merck data, as the number of samples is smaller.
+### Now generate subsetted matrices (each one containing 750 samples) to make working with these matrices to calculate individual level statistics easier.
 mkdir final_AD_DPALT_files_per_chromosome_sample_subsets
 for CHROM in {1..22} X
 do
     export AD_FILE=PDGSC_AD_matrix_chr${CHROM}.tab
     export DPALT_FILE=PDGSC_DPALT_matrix_chr${CHROM}.tab
-    nohup Rscript split_ad_files_samplesubsets.R &> nohup_split_ad_files_samplesubsets_chr${CHROM}.log &
+    nohup Rscript ./pdgsc/scripts/r/split_ad_files_samplesubsets.R &> nohup_split_ad_files_samplesubsets_chr${CHROM}.log &
 done
 wait
 
@@ -142,7 +144,7 @@ for CHROM in {1..22} X
 do
     export GT_FILE=genotypes_chr${CHROM}.tab
     export AD_FILE=PDGSC_AD_matrix_chr${CHROM}.tab
-    nohup Rscript generate_ad_matrices_called_geno_only.R &> nohup_generate_ad_matrices_called_geno_only_chr${CHROM}.log &
+    nohup Rscript ./pdgsc/scripts/r/generate_ad_matrices_called_geno_only.R &> nohup_generate_ad_matrices_called_geno_only_chr${CHROM}.log &
 done
 wait
 
@@ -151,7 +153,7 @@ mkdir AD_calledGenoOnly_per_chromosome_sample_subsets
 for CHROM in {1..22} X
 do
     export AD_FILE=PDGSC_AD_matrix_calledGenotypesOnly_chr${CHROM}.tab
-    nohup Rscript split_ad_calledGenoOnly_samplesubsets.R &> nohup_split_ad_calledGenoOnly_samplesubsets_chr${CHROM}.log &
+    nohup Rscript ./pdgsc/scripts/r/split_ad_calledGenoOnly_samplesubsets.R &> nohup_split_ad_calledGenoOnly_samplesubsets_chr${CHROM}.log &
 done
 wait
 
@@ -163,7 +165,7 @@ mkdir final_AD_calledGenoOnly_files_sample_subsets
 while read SUBSET
 do
     export AD_SUBSET=$SUBSET
-	nohup Rscript merge_per_chromosome_AD_calledGenoOnly_sample_subsets.R &> nohup_merge_per_chromosome_AD_calledGenoOnly_sample_subsets_chr${SUBSET}.log &
+	nohup ./pdgsc/scripts/r/Rscript merge_per_chromosome_AD_calledGenoOnly_sample_subsets.R &> nohup_merge_per_chromosome_AD_calledGenoOnly_sample_subsets_chr${SUBSET}.log &
 done < AD_matrix_samplesubset_list.txt
 wait
 
@@ -172,11 +174,11 @@ wait
 
 
 ### To calculate mean depth per sample (done with all variants here, but if want to only include post-QC variants, adapt and uncomment the lines in the script that subset the matrix to only include rows of QC'd variants
-for CHROM in {1..22} X
+while read SUBSET
 do
-    export AD_FILE=PDGSC_AD_matrix_calledGenotypesOnly_chr${CHROM}.tab
-    nohup Rscript calculate_mean_depths_calledGenoOnly.R &> nohup_calculate_mean_depths_calledGenoOnly_chr${CHROM}.log &
-done
+    export AD_SUBSET=PDGSC_AD_matrix_calledGenoOnly_chrALL_$SUBSET
+    nohup Rscript ./pdgsc/scripts/r/calculate_mean_depths_calledGenoOnly.R &> nohup_calculate_mean_depths_calledGenoOnly_chr${CHROM}.log &
+done < AD_matrix_samplesubset_list.txt
 wait
 
 ### Then can plot and remove outliers
@@ -186,9 +188,11 @@ mkdir DPALT_per_sample_means
 while read SUBSET
 do
     export DPALT_SUBSET=PDGSC_DPALT_matrix_chrALL_${SUBSET}
-    nohup Rscript calculate_mean_dpalt.R &> nohup_calculate_mean_depths_subset_${SUBSET}.log &
+    nohup Rscript ./pdgsc/scripts/r/calculate_mean_dpalt.R &> nohup_calculate_mean_depths_subset_${SUBSET}.log &
 done < AD_matrix_samplesubset_list.txt
 wait
 
+cat PDGSC_AD_means_nsites_calledGenoOnly* > PDGSC_AD_means_nsites_calledGenoOnly.tab
+cat PDGSC_DPALT_full_means* > PDGSC_DPALT_full_means.tab
+
 ### Then can plot and remove outliers
-### Can also rerun pseq istats here (with all variants or post-QC variants) to look for outliers.
