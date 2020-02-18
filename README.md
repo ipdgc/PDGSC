@@ -18,16 +18,14 @@ To reproduce the PDGSC analysis pipeline, do the following:
 1. Clone this github repository
 
 2. Install required/useful tools
-
 ````bash
 bash ./pdgsc/scripts/shell/install_tools.sh
 ````
 
 3. Download analysis files (VCF etc)
-
 ````bash
 bash ./pdgsc/scripts/shell/download_analysis_files.sh
-````
+```
 
 4. Generates depth metrics and calculate individual-level depth statistics
 ````bash
@@ -39,12 +37,42 @@ bash ./pdgsc/scripts/shell/get_ad_info.sh
 bash ./pdgsc/scripts/shell/insdividual_qc.sh
 ````
 
+6. Match ADSP controls to samples from cohorts with no controls
+````bash
+bash ./pdgsc/scripts/shell/casecontrol_matching.sh
+````
+
+7. Perform variant QC and generate covariates for analysis
+````bash
+bash ./pdgsc/scripts/shell/variant_qc_generate_covariates.sh
+````
+
+8. Run Rvtests to generate covariance files
+````bash
+bash ./pdgsc/scripts/shell/run_rvtests.sh
+````
+
+9. Run Raremetals to meta-analyse
+````bash
+bash ./pdgsc/scripts/shell/run_raremetals.sh
+````
+
+10. Do some post-processing
+````bash
+bash ./pdgsc/scripts/shell/subset_results_postqc.sh
+````
+
+That's it!
 
 Flowchart etc here
 
 ## Useful scripts for exome analyses <a name="scripts"></a>
 
-Some useful scripts for secondary analyses
+If you're looking to perform an analysis on a candidate gene(s) of interest, then the following script might be useful. You can use it to extract the gene of interest, keep only samples and variants that are covered well in the gene, generate an annotated table of all the variants found in the gene, and perform burden tests on the gene.
+
+````bash
+bash ./pdgsc/scripts/shell/insdividual_qc.sh
+````
 
 ## Some general notes for beginners running analyses on the cloud <a name="cloud"></a>
 
