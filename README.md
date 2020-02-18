@@ -71,7 +71,7 @@ Flowchart etc here
 If you're looking to perform an analysis on a candidate gene(s) of interest, then the following script might be useful. You can use it to extract the gene of interest, keep only samples and variants that are covered well in the gene, generate an annotated table of all the variants found in the gene, and perform burden tests on the gene.
 
 ````bash
-bash ./pdgsc/scripts/shell/insdividual_qc.sh
+bash ./pdgsc/scripts/shell/extract_annotated_variants_for_gene_of_interest.sh
 ````
 
 ## Some general notes for beginners running analyses on the cloud <a name="cloud"></a>
