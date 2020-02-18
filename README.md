@@ -25,9 +25,9 @@ bash ./pdgsc/scripts/shell/install_tools.sh
 3. Download analysis files (VCF etc)
 ````bash
 bash ./pdgsc/scripts/shell/download_analysis_files.sh
-```
+````
 
-4. Generates depth metrics and calculate individual-level depth statistics
+4. Generate depth metrics and calculate individual-level depth statistics
 ````bash
 bash ./pdgsc/scripts/shell/get_ad_info.sh
 ````
