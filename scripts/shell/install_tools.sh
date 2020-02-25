@@ -83,4 +83,3 @@ sudo apt-get remove tabix -y
 sudo rm -r /usr/local/bin/tabix
 wget http://launchpadlibrarian.net/74318164/tabix_0.2.5-1ubuntu1_amd64.deb
 sudo apt install ./tabix_0.2.5-1ubuntu1_amd64.deb
-# tabix is now in /usr/bin/tabix

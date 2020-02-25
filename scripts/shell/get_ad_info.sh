@@ -9,11 +9,11 @@ export SAMPLE_INFO= # name of the sample sheet
 
 ### Use GATK VariantsToTable to extract AD fields
 echo '#!/bin/bash/
-for CHROM in {1..22} X
-do
-    tabix -p vcf ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz
-    java -jar GenomeAnalysisTK.jar -R human_g1k_v37.fasta -T VariantsToTable -V ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz -F ID -F ALT -GF AD -o ${VCF_STEM}_chr${CHROM}_variantid_AD_fields.tab
-done' > GATK_get_AD.sh
+# for CHROM in {1..22} X
+# do
+CHROM=21
+    ./gatk-4.1.4.1/gatk -R human_g1k_v37.fasta -T VariantsToTable -V ${VCF_STEM}_chr${CHROM}_variantid.vcf.gz -F ID -F ALT -GF AD -o ${VCF_STEM}_chr${CHROM}_variantid_AD_fields.tab
+# done' > GATK_get_AD.sh
 nohup bash GATK_get_AD.sh &> nohup_GATK_get_AD.log &
 wait
 
