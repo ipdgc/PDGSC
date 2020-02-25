@@ -34,7 +34,7 @@ bash ./pdgsc/scripts/shell/get_ad_info.sh
 
 5. Filter out poor quality samples and perform GWAS-style individual-level QC
 ````bash
-bash ./pdgsc/scripts/shell/insdividual_qc.sh
+bash ./pdgsc/scripts/shell/individual_qc.sh
 ````
 
 6. Match ADSP controls to samples from cohorts with no controls
