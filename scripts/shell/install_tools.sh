@@ -71,6 +71,9 @@ unzip plinkseq-x86_64-latest.zip
 ### Download GATK & PICARD
 wget "https://github.com/broadinstitute/gatk/releases/download/4.1.4.1/gatk-4.1.4.1.zip"
 wget "https://github.com/broadinstitute/picard/releases/download/2.16.0/picard.jar"
+wget "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.gz"
+wget "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.fai"
+gunzip human_g1k_v37.fasta.gz
 unzip gatk-4.1.4.1.zip
 ./gatk-4.1.4.1/gatk CreateSequenceDictionary -R human_g1k_v37.fasta -O human_g1k_v37.dict
 
