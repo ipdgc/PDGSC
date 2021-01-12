@@ -11,6 +11,9 @@
 
 Collection of scripts used in the analysis and QC of the PDGSC data, as well as some useful scripts for other analyses.
 
+The PDGSC is funded by MJFF => https://www.michaeljfox.org/grant/parkinsons-disease-genetics-sequencing-consortium
+
+
 ## Summary of the PDGSC pipeline <a name="pipeline"></a>
 
 To reproduce the PDGSC analysis pipeline, do the following:
